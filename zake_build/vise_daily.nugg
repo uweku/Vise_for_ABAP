@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nugget name="C:\Users\Uwe\Documents\workspace\Vise_for_ABAP\zake_build\vise_daily.nugg">
+ <CLAS CLSNAME="ZCL_VISE" VERSION="1" LANGU="E" DESCRIPT="Vise" CATEGORY="00" EXPOSURE="2" STATE="1" RELEASE="0" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 ">
+  <localImplementation>*&quot;* use this source file for the definition and implementation of
+*&quot;* local helper classes, interface definitions and type
+*&quot;* declarations</localImplementation>
+  <localTypes>*&quot;* use this source file for any type of declarations (class
+*&quot;* definitions, interfaces or type declarations) you need for
+*&quot;* components in the private section</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <typeUsage CLSNAME="ZCL_VISE" TYPEGROUP="ABAP" VERSION="1" TPUTYPE="0" EXPLICIT="X"/>
+  <forwardDeclaration>ABAP</forwardDeclaration>
+  <attribute CLSNAME="ZCL_VISE" CMPNAME="MT_VISE_RECORDS" VERSION="1" LANGU="D" DESCRIPT="Aufzeichnungen von Vise" EXPOSURE="1" STATE="1" EDITORDER="1 " ATTDECLTYP="1" ATTEXPVIRT="0" TYPTYPE="4" SRCROW1="6 " SRCCOLUMN1="4 " SRCROW2="6 " SRCCOLUMN2="46 " TYPESRC_LENG="44 " TYPESRC="mt_vise_records TYPE TABLE OF zvise_records
+"/>
+  <method CLSNAME="ZCL_VISE" CMPNAME="CLASS_CONSTRUCTOR" VERSION="1" LANGU="D" DESCRIPT="CLASS_CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="1 " DISPID="0 " MTDTYPE="2" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+   <source>METHOD class_constructor.
+  SET HANDLER flush_after_rollback.
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_VISE" CMPNAME="FLUSH_AFTER_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="schreibt Werte auf die Datenbank / für Verw. nach ROLLBACK" EXPOSURE="1" STATE="1" EDITORDER="1 " DISPID="0 " MTDTYPE="1" MTDDECLTYP="1" REFCLSNAME="CL_SYSTEM_TRANSACTION_STATE" REFCMPNAME="TRANSACTION_FINISHED" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="FLUSH_AFTER_ROLLBACK" SCONAME="KIND" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="1" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="0" TYPTYPE="0"/>
+   <source>METHOD flush_after_rollback.
+  DATA ls_record TYPE zvise_records.
+  DATA lv_task TYPE string.
+  IF kind NE cl_system_transaction_state=&gt;rollback_work.
+    RETURN.
+  ENDIF.
+  LOOP AT mt_vise_records INTO ls_record.
+    lv_task = sy-tabix.
+    IF ls_record-blocktype IS NOT INITIAL.
+      MODIFY zvise_records FROM ls_record.
+    ELSE.
+      DELETE FROM zvise_records WHERE mainprogram = ls_record-mainprogram AND uname = ls_record-uname.
+    ENDIF.
+  ENDLOOP.
+  FREE: mt_vise_records.
+  COMMIT WORK.
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_VISE" CMPNAME="GRIP" VERSION="1" LANGU="D" DESCRIPT="fixiert den Wert" EXPOSURE="2" STATE="1" EDITORDER="2 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="I_DATA" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="DATA"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_NAME" VERSION="1" LANGU="D" DESCRIPT="Logischer Name des aufgezeichneten Wertes" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZNAME_OF_VALUE" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IT_IGNORE_COMPONENTS" VERSION="1" LANGU="D" DESCRIPT="Tabelle von Strings" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING_TABLE" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD01" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD02" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD03" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+   <source>METHOD grip.
+  DATA: lt_abap_callstack TYPE abap_callstack.
+  DATA: ls_abap_callstack TYPE abap_callstack_line.
+  DATA ls_record TYPE zvise_records.
+  FIELD-SYMBOLS &lt;lv_data&gt; TYPE any.
+  FIELD-SYMBOLS &lt;ls_data&gt; TYPE any.
+  DATA lv_component TYPE string.
+
+  DATA lv_previous_content TYPE string.
+  DATA lo_elem_descr TYPE REF TO cl_abap_elemdescr.
+  DATA lo_struct_descr TYPE REF TO cl_abap_structdescr.
+  DATA lo_table_descr TYPE REF TO cl_abap_tabledescr.
+  FIELD-SYMBOLS &lt;lt_any&gt; TYPE ANY TABLE.
+  FIELD-SYMBOLS &lt;ls_any&gt; TYPE any.
+  DATA lr_data TYPE REF TO data.
+
+  CALL FUNCTION &apos;SYSTEM_CALLSTACK&apos;
+    IMPORTING
+      callstack = lt_abap_callstack.
+
+  READ TABLE lt_abap_callstack INTO ls_abap_callstack INDEX 2.
+  CHECK sy-subrc = 0.
+
+  MOVE-CORRESPONDING ls_abap_callstack TO ls_record.
+  ls_record-value_name = iv_name.
+  ls_record-uname = sy-uname.
+
+  IF it_ignore_components IS NOT INITIAL OR iv_sort_field01 IS NOT INITIAL OR iv_sort_field02 IS NOT INITIAL OR iv_sort_field03 IS NOT INITIAL.
+    TRY.
+        lo_elem_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+
+    TRY.
+        lo_struct_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+        CREATE DATA lr_data LIKE i_data.
+        ASSIGN lr_data-&gt;* TO &lt;ls_any&gt;.
+
+        ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_any&gt; TO &lt;lv_data&gt;.
+        IF sy-subrc = 0.
+          CLEAR: &lt;lv_data&gt;.
+        ENDIF.
+        CALL TRANSFORMATION id SOURCE value = &lt;ls_any&gt; RESULT XML ls_record-content.
+
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+
+    TRY.
+        lo_table_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+        CREATE DATA lr_data LIKE i_data.
+        ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
+        &lt;lt_any&gt; = i_data.
+        LOOP AT it_ignore_components INTO lv_component.
+          LOOP AT &lt;lt_any&gt; ASSIGNING &lt;ls_data&gt;.
+            ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_data&gt; TO &lt;lv_data&gt;.
+            IF sy-subrc = 0.
+              CLEAR: &lt;lv_data&gt;.
+            ENDIF.
+          ENDLOOP.
+        ENDLOOP.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01).
+        ENDIF.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02).
+        ENDIF.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02) (iv_sort_field03).
+        ENDIF.
+        CALL TRANSFORMATION id SOURCE value = &lt;lt_any&gt; RESULT XML ls_record-content.
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+  ENDIF.
+
+  IF ls_record-content IS INITIAL.
+    CALL TRANSFORMATION id SOURCE value = i_data RESULT XML ls_record-content.
+  ENDIF.
+
+  SELECT SINGLE content FROM zvise_records INTO lv_previous_content
+    WHERE mainprogram = ls_record-mainprogram
+    AND include     = ls_record-include
+    AND blocktype   = ls_record-blocktype
+    AND blockname   = ls_record-blockname
+    AND value_name  = ls_record-value_name
+    AND uname = ls_record-uname
+    AND is_error_record = abap_false.
+  IF sy-subrc = 0.
+*    IF lo_table_descr IS NOT INITIAL.
+*      CREATE DATA lr_data LIKE i_data.
+*      ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
+*      CALL TRANSFORMATION id SOURCE XML lv_previous_content RESULT value = &lt;lt_any&gt;.
+*    ENDIF.
+    IF lv_previous_content NE ls_record-content.
+      RAISE EXCEPTION TYPE zcx_vise.
+    ENDIF.
+  ENDIF.
+
+  CHECK ls_record IS NOT INITIAL.
+  MODIFY zvise_records FROM ls_record.
+
+  register_db_op_after_rollback( ls_record ).
+ENDMETHOD.                    &quot;grip</source>
+  </method>
+  <method CLSNAME="ZCL_VISE" CMPNAME="RAISE_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="Performs a ROLLBACK and raises an appropriate exception" EXPOSURE="1" STATE="1" EDITORDER="3 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+   <source>METHOD raise_rollback.
+  ROLLBACK WORK.
+  RAISE EXCEPTION TYPE zcx_vise_forced_rollback.
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_VISE" CMPNAME="REGISTER_DB_OP_AFTER_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="registriert DB Update/wird nach dem Rollback durchgeführt" EXPOSURE="1" STATE="1" EDITORDER="2 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="REGISTER_DB_OP_AFTER_ROLLBACK" SCONAME="IS_RECORD" VERSION="1" LANGU="D" DESCRIPT="Aufzeichnungen von Vise" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZVISE_RECORDS"/>
+   <source>METHOD register_db_op_after_rollback.
+    APPEND is_record TO mt_vise_records.
+  ENDMETHOD.                    &quot;register_db_op_after_rollback</source>
+  </method>
+  <method CLSNAME="ZCL_VISE" CMPNAME="RELEASE" VERSION="1" LANGU="D" DESCRIPT="initialisiert Vise" EXPOSURE="2" STATE="1" EDITORDER="3 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="RELEASE" SCONAME="IV_REPID" VERSION="1" LANGU="D" DESCRIPT="ABAP-Programm, aktuelles Rahmenprogramm" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="SYREPID"/>
+   <parameter CLSNAME="ZCL_VISE" CMPNAME="RELEASE" SCONAME="IV_UNAME" VERSION="1" LANGU="D" DESCRIPT="Benutzername" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="UBNAME" PARVALUE="SY-UNAME"/>
+   <source>METHOD release.
+  DATA ls_record TYPE zvise_records.
+  ls_record-mainprogram = iv_repid.
+  ls_record-uname = iv_uname.
+
+  DELETE FROM zvise_records WHERE mainprogram = iv_repid AND uname = iv_uname.
+  register_db_op_after_rollback( ls_record ).
+ENDMETHOD.                    &quot;release</source>
+  </method>
+ </CLAS>
+ <CLAS CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" VERSION="1" LANGU="E" DESCRIPT="Class under observation" CATEGORY="00" EXPOSURE="2" STATE="1" RELEASE="0" CLSCCINCL="X" FIXPT="X" UNICODE="X" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 ">
+  <localImplementation>*&quot;* use this source file for the definition and implementation of
+*&quot;* local helper classes, interface definitions and type
+*&quot;* declarations</localImplementation>
+  <localTypes>*&quot;* use this source file for any type of declarations (class
+*&quot;* definitions, interfaces or type declarations) you need for
+*&quot;* components in the private section</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <typeUsage CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" TYPEGROUP="ABAP" VERSION="1" TPUTYPE="0" IMPLICIT="X"/>
+  <forwardDeclaration>ABAP</forwardDeclaration>
+  <attribute CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="MV_CHANGES_BEHAVIOR" VERSION="1" LANGU="D" EXPOSURE="1" STATE="1" EDITORDER="1 " ATTDECLTYP="0" ATTEXPVIRT="0" TYPTYPE="1" TYPE="ABAP_BOOL" SRCROW1="0 " SRCCOLUMN1="0 " SRCROW2="0 " SRCCOLUMN2="0 " TYPESRC_LENG="0 "/>
+  <method CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="CONSTRUCTOR" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="2 " DISPID="0 " MTDTYPE="2" MTDDECLTYP="0" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="CONSTRUCTOR" SCONAME="IV_CHANGES_BEHAVIOR" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="2" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ABAP_BOOL"/>
+   <source>METHOD constructor.
+  mv_changes_behavior = iv_changes_behavior.
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="SELECT_SFLIGHT" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="1 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="0" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="SELECT_SFLIGHT" SCONAME="IV_CARRID" VERSION="1" LANGU="D" DESCRIPT="Kurzbezeichnung der Fluggesellschaft" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="S_CARR_ID"/>
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="SELECT_SFLIGHT" SCONAME="IV_CONNID" VERSION="1" LANGU="D" DESCRIPT="Code der Einzelflugverbindung" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="S_CONN_ID"/>
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="SELECT_SFLIGHT" SCONAME="IV_DATE" VERSION="1" LANGU="D" DESCRIPT="Flugdatum" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="S_DATE" PAROPTIONL="X"/>
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="SELECT_SFLIGHT" SCONAME="RT_SFLIGHT" VERSION="1" LANGU="D" DESCRIPT="Tabelle für SFLIGHT" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " PARDECLTYP="3" PARPASSTYP="0" TYPTYPE="1" TYPE="FLIGHTTAB"/>
+   <source>METHOD select_sflight.
+  FIELD-SYMBOLS &lt;ls_sflight&gt; TYPE sflight.
+  IF iv_carrid IS NOT INITIAL AND iv_connid IS NOT INITIAL AND iv_date IS NOT INITIAL.
+    SELECT * FROM sflight INTO TABLE rt_sflight WHERE carrid = iv_carrid AND connid = iv_connid AND fldate = iv_date.
+  ELSEIF iv_carrid IS NOT INITIAL AND iv_connid IS NOT INITIAL.
+    SELECT * FROM sflight INTO TABLE rt_sflight WHERE carrid = iv_carrid AND connid = iv_connid.
+  ENDIF.
+  IF mv_changes_behavior = abap_true.&quot;change some values
+    LOOP AT rt_sflight ASSIGNING &lt;ls_sflight&gt;.
+      &lt;ls_sflight&gt;-price = &lt;ls_sflight&gt;-price + 1.
+    ENDLOOP.
+  ENDIF.
+ENDMETHOD.</source>
+  </method>
+  <method CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="TEST_TRANSACTIONAL_INTEGRITY" VERSION="1" LANGU="D" EXPOSURE="2" STATE="1" EDITORDER="3 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="0" BCMTDCAT="00" BCMTDSYN="0">
+   <parameter CLSNAME="ZCL_VISE_CLASS_UNDER_INSPECT" CMPNAME="TEST_TRANSACTIONAL_INTEGRITY" SCONAME="RS_NOT_COMMITED_SFLIGHT" VERSION="1" LANGU="D" DESCRIPT="Flug" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="3" PARPASSTYP="0" TYPTYPE="1" TYPE="SFLIGHT"/>
+   <source>METHOD test_transactional_integrity.
+
+  rs_not_commited_sflight-carrid = &apos;UK&apos;.
+  rs_not_commited_sflight-connid = &apos;1985&apos;.
+  rs_not_commited_sflight-fldate = &apos;20100520&apos;.
+
+  DELETE sflight FROM rs_not_commited_sflight.
+  COMMIT WORK.
+
+  MODIFY sflight FROM rs_not_commited_sflight.
+  TRY.
+      zcl_vise=&gt;grip( rs_not_commited_sflight ).
+    CATCH cx_root.
+      &quot;we aren&apos;t really interested in what vise says..
+      &quot;rather if the following ROLLBACK will rollback the currently inserted entry or not
+  ENDTRY.
+  ROLLBACK WORK.
+ENDMETHOD.</source>
+  </method>
+ </CLAS>
+ <CLAS CLSNAME="ZCX_VISE" VERSION="1" LANGU="E" DESCRIPT="main exception for Vise (unchecked)" CATEGORY="40" EXPOSURE="2" STATE="1" RELEASE="0" CLSCCINCL="X" FIXPT="X" UNICODE="X" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 " REFCLSNAME="CX_NO_CHECK">
+  <localImplementation>*&quot;* use this source file for the definition and implementation of
+*&quot;* local helper classes, interface definitions and type
+*&quot;* declarations</localImplementation>
+  <localTypes>*&quot;* use this source file for any type of declarations (class
+*&quot;* definitions, interfaces or type declarations) you need for
+*&quot;* components in the private section</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <inheritance CLSNAME="ZCX_VISE" REFCLSNAME="CX_NO_CHECK" VERSION="1" STATE="1"/>
+ </CLAS>
+ <CLAS CLSNAME="ZCX_VISE_FORCED_ROLLBACK" VERSION="1" LANGU="E" DESCRIPT="forced ROLLBACK has been triggered (unchecked)" CATEGORY="40" EXPOSURE="2" STATE="1" RELEASE="0" CLSCCINCL="X" FIXPT="X" UNICODE="X" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 " REFCLSNAME="ZCX_VISE">
+  <localImplementation>*&quot;* use this source file for the definition and implementation of
+*&quot;* local helper classes, interface definitions and type
+*&quot;* declarations</localImplementation>
+  <localTypes>*&quot;* use this source file for any type of declarations (class
+*&quot;* definitions, interfaces or type declarations) you need for
+*&quot;* components in the private section</localTypes>
+  <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+  <inheritance CLSNAME="ZCX_VISE_FORCED_ROLLBACK" REFCLSNAME="ZCX_VISE" VERSION="1" STATE="1"/>
+ </CLAS>
+ <DEVC DEVCLASS="Z_VISE_FOR_ABAP" CTEXT="Vise tool for ABAP" LANGUAGE="D" MASTERLANG="D" KORRFLAG="X" PDEVCLASS="SAP" DLVUNIT="HOME" NAMESPACE="/0CUST/" CREATED_BY="KUNATHU" CREATED_ON="20130614" CHANGED_BY="KUNATHU" CHANGED_ON="20130614" PROJECT_GUID="00000000000000000000000000000000" TRANSLATION_DEPTH="NOT_CLASSIFIED" TRANSLATION_DEPTH_TEXT="Not Classified"/>
+ <DTEL ROLLNAME="ZBLOCKNAME" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="Name of Processing Block" REPTEXT="Name of Processing Block" SCRTEXT_S="NameProcBl" SCRTEXT_M="Name of ProcBlock" SCRTEXT_L="Name of Processing Block" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000060" DECIMALS="000000" OUTPUTLEN="000060">
+  <tpara/>
+ </DTEL>
+ <DTEL ROLLNAME="ZBLOCKTYPE" DDLANGUAGE="E" DOMNAME="CHAR12" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="Type of Processing Block (Procedure, Module, Event Block)" REPTEXT="Type of Processing Block" SCRTEXT_S="TypeProBlo" SCRTEXT_M="Type of ProcBlock" SCRTEXT_L="Type of Processing Block" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000012" DECIMALS="000000" OUTPUTLEN="000012" REFKIND="D">
+  <tpara/>
+ </DTEL>
+ <DTEL ROLLNAME="ZCONTENT_XML" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="20" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" DDTEXT="Content (XML)" REPTEXT="Content (XML)" SCRTEXT_S="Content" SCRTEXT_M="Content (XML)" SCRTEXT_L="Content (XML)" AUTHCLASS="00" DTELMASTER="E" DATATYPE="STRG" LENG="000000" DECIMALS="000000" OUTPUTLEN="000000">
+  <tpara/>
+ </DTEL>
+ <DTEL ROLLNAME="ZIS_VISE_ERROR" DDLANGUAGE="E" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DDTEXT="Wrong value compared to recorded value?" REPTEXT="Wrong value compared to recorded value?" SCRTEXT_S="Wrong val?" SCRTEXT_M="Wrong value?" SCRTEXT_L="Wrong value compared to record" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" DECIMALS="000000" OUTPUTLEN="000001" VALEXI="X" REFKIND="D">
+  <tpara/>
+ </DTEL>
+ <DTEL ROLLNAME="ZNAME_OF_VALUE" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="logical name of the recorded value" REPTEXT="logical name of the recorded value" SCRTEXT_S="LogName" SCRTEXT_M="logical name" SCRTEXT_L="logical name of the recorded value" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" DECIMALS="000000" OUTPUTLEN="000020">
+  <tpara/>
+ </DTEL>
+ <PROG NAME="ZAKE_VISE_FOR_ABAP" VARCL="X" SUBC="1" RMAND="001" RLOAD="D" FIXPT="X" UCCHECK="X">
+  <textPool>
+   <language SPRAS="D">
+    <textElement ID="R" ENTRY="Programm ZAKE_VISE_FOR_ABAP" LENGTH="27 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  ZAKE_VISE_FOR_ABAP
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  zake_vise_for_abap.
+
+
+CONSTANTS cl_svn TYPE seoclsname VALUE &apos;ZCL_ZAKE_SVN&apos;.
+CONSTANTS cl_tortoise_svn TYPE seoclsname VALUE &apos;ZCL_ZAKE_TORTOISE_SVN&apos;.
+
+DATA package TYPE devclass.
+DATA zake    TYPE REF TO zake.
+
+DATA objects TYPE scts_tadir.
+DATA object  LIKE LINE OF objects.
+
+DATA files TYPE string_table.
+DATA file  LIKE LINE OF files.
+
+DATA zake_build                TYPE string.
+DATA zake_nuggetname           TYPE string.
+
+DATA comment_str               TYPE string.
+DATA loclpath_str              TYPE string.
+DATA svnpath_str               TYPE string.
+DATA username_str              TYPE string.
+DATA password_str              TYPE string.
+DATA class                     TYPE seoclsname.
+
+DATA: ex TYPE REF TO zcx_saplink,
+      message TYPE string.
+
+SELECTION-SCREEN BEGIN OF BLOCK a WITH FRAME TITLE a.
+PARAMETERS:
+*  checkout TYPE flag RADIOBUTTON GROUP act,
+*  update   TYPE flag RADIOBUTTON GROUP act,
+  install  TYPE flag RADIOBUTTON GROUP act,
+  export   TYPE flag RADIOBUTTON GROUP act,
+  build    TYPE flag RADIOBUTTON GROUP act DEFAULT &apos;X&apos;.
+*  checkin  TYPE flag RADIOBUTTON GROUP act.
+SELECTION-SCREEN END OF BLOCK a.
+
+SELECTION-SCREEN BEGIN OF BLOCK b WITH FRAME TITLE b.
+PARAMETERS:
+  svn      TYPE flag RADIOBUTTON GROUP cl,
+  tortoise TYPE flag RADIOBUTTON GROUP cl.
+SELECTION-SCREEN END OF BLOCK b.
+
+SELECTION-SCREEN BEGIN OF BLOCK c WITH FRAME TITLE c.
+PARAMETERS:
+  loclpath TYPE char512 DEFAULT &apos;C:\Users\Uwe\Documents\workspace\Vise_for_ABAP&apos; LOWER CASE OBLIGATORY,
+  zakenugg TYPE char512 DEFAULT &apos;C:\Users\Uwe\Documents\workspace\Vise_for_ABAP\zake_build\vise_daily.nugg&apos; LOWER CASE OBLIGATORY,
+  svnpath  TYPE char512 DEFAULT &apos;https://code.sdn.sap.com/svn/...&apos; LOWER CASE OBLIGATORY,
+  comment  TYPE char512 DEFAULT &apos;&apos; LOWER CASE,
+  username TYPE char512 LOWER CASE,
+  password TYPE char512 LOWER CASE,
+  testrun  TYPE flag    DEFAULT &apos;X&apos;.
+SELECTION-SCREEN END OF BLOCK c.
+
+INITIALIZATION.
+  a = &apos;Action&apos;.
+  b = &apos;Version Controll Program&apos;.
+  c = &apos;Parameters&apos;.
+
+START-OF-SELECTION.
+
+  svnpath_str               = svnpath.
+  loclpath_str              = loclpath.
+  zake_nuggetname           = zakenugg.
+  comment_str               = comment.
+
+  &quot; SELECT * INTO TABLE objects FROM tadir WHERE devclass = &apos;ZABAP2XLSX&apos;.
+  &quot; DELETE zake_objects WHERE object = &apos;DEVC&apos;.
+
+  TRY.
+      IF svn = &apos;X&apos;.
+        class = cl_svn.
+      ELSE.
+        class = cl_tortoise_svn.
+      ENDIF.
+
+      CREATE OBJECT zake
+        TYPE
+        (class)
+        EXPORTING
+          i_svnpath   = svnpath_str
+          i_localpath = loclpath_str.
+      zake-&gt;set_testrun( testrun ).
+      zake-&gt;set_package( &apos;Z_VISE_FOR_ABAP&apos; ).
+      &quot; Build Object list for Export
+      &quot; Classes
+      SELECT object obj_name INTO CORRESPONDING FIELDS OF TABLE objects FROM tadir WHERE devclass = &apos;Z_VISE_FOR_ABAP&apos;.
+
+*      IF checkout = &apos;X&apos;.
+*        zake-&gt;checkout( ).
+*      ELSEIF update = &apos;X&apos;.
+*        zake-&gt;update( ).
+*      ELSE
+      IF install = &apos;X&apos;.
+        zake-&gt;install_slinkees_from_lm( testrun ).
+        IF testrun IS INITIAL.
+          zake-&gt;activate_package_objects( ).
+        ENDIF.
+        &quot; zake-&gt;install_objects( zake_objects ).
+      ELSEIF export = &apos;X&apos;.
+
+        zake-&gt;set_checkin_objects( objects ).
+        zake-&gt;download_slinkees_to_lm = abap_true.
+        zake-&gt;download_nugget_to_lm   = space.
+        zake-&gt;download_zip_to_lm_flag = space.
+        zake-&gt;create_slinkees( zake_nuggetname ).
+      ELSEIF build = &apos;X&apos;.
+        &quot; Build a complete package for download
+        zake-&gt;set_checkin_objects( objects ).
+        &quot; We don&apos;t want that for the complete Package Slinkees are created
+        &quot; in the ZAKE folder
+        zake-&gt;download_slinkees_to_lm = space.
+        zake-&gt;download_nugget_to_lm   = abap_true.
+        zake-&gt;create_slinkees( zake_nuggetname ).
+*      ELSEIF checkin = &apos;X&apos;.
+*        zake-&gt;set_package( &apos;ZA2X&apos; ).
+*        zake-&gt;set_checkin_objects( objects ).
+*        zake-&gt;create_slinkees( zake_nuggetname ).
+*        IF testrun IS INITIAL.
+*          zake-&gt;checkin( comment_str ).
+*        ENDIF.
+      ENDIF.
+    CATCH zcx_saplink INTO ex.
+      message = ex-&gt;msg.
+      WRITE: / &apos;An Error occured: &apos;, message.
+  ENDTRY.</source>
+ </PROG>
+ <PROG NAME="Z_VISE_INITIALIZE_RECORDS" VARCL="X" SUBC="1" RMAND="001" RLOAD="D" FIXPT="X" UCCHECK="X">
+  <textPool>
+   <language SPRAS="D">
+    <textElement ID="R" ENTRY="Initialisiert Aufzeichungen von Vise" LENGTH="36 "/>
+    <textElement ID="S" KEY="PROG" ENTRY="D       ." LENGTH="9 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  Z_VISE_INITIALIZE_RECORDS
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  z_vise_initialize_records.
+
+PARAMETERS prog TYPE syrepid.
+
+DELETE FROM zvise_records WHERE mainprogram = prog AND uname = sy-uname.
+WRITE: &apos;sy-subrc&apos;, sy-subrc.</source>
+ </PROG>
+ <PROG NAME="Z_VISE_UNIT_TEST" VARCL="X" SUBC="1" RSTAT="T" RMAND="001" RLOAD="D" FIXPT="X" UCCHECK="X">
+  <textPool>
+   <language SPRAS="D">
+    <textElement ID="R" ENTRY="Programm Z_VISE_UNIT_TEST" LENGTH="25 "/>
+   </language>
+  </textPool>
+  <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  Z_VISE_UNIT_TEST
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  z_vise_unit_test.
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_cl_ DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cl_vise DEFINITION FOR TESTING. &quot;#AU Risk_Level Harmless
+  &quot;#AU Duration Short
+  PRIVATE SECTION.
+    DATA ms_sflight TYPE sflight.
+    DATA ms_sflight2 TYPE sflight.
+    METHODS setup.
+    METHODS teardown.
+    METHODS no_changing_behavior FOR TESTING.
+    METHODS changing_behavior FOR TESTING.
+    METHODS changing_behavior_but_no_exc FOR TESTING.
+    METHODS test_luw FOR TESTING.
+    METHODS test_sorted_table FOR TESTING.
+ENDCLASS.                    &quot;lcl_cl_vise DEFINITION
+*----------------------------------------------------------------------*
+*       CLASS lcl_cl_vise IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cl_vise IMPLEMENTATION.
+  METHOD setup.
+    DATA lt_sflight TYPE flighttab.
+    SELECT * FROM sflight INTO TABLE lt_sflight WHERE carrid = &apos;LH&apos; AND connid = &apos;400&apos; AND fldate = &apos;20100520&apos;.
+    IF sy-subrc NE 0.
+      ms_sflight-carrid = &apos;LH&apos;.
+      ms_sflight-connid = &apos;400&apos;.
+      ms_sflight-fldate = &apos;20100520&apos;.
+      MODIFY sflight FROM ms_sflight.
+    ENDIF.
+
+    SELECT * FROM sflight INTO TABLE lt_sflight WHERE carrid = &apos;LH&apos; AND connid = &apos;400&apos; AND fldate = &apos;20100912&apos;.
+    IF sy-subrc NE 0.
+      ms_sflight2-carrid = &apos;LH&apos;.
+      ms_sflight2-connid = &apos;400&apos;.
+      ms_sflight2-fldate = &apos;20100912&apos;.
+      MODIFY sflight FROM ms_sflight2.
+    ENDIF.
+  ENDMETHOD.                    &quot;setup
+
+  METHOD teardown.
+    IF ms_sflight IS NOT INITIAL.
+      DELETE sflight FROM ms_sflight.
+    ENDIF.
+    IF ms_sflight2 IS NOT INITIAL.
+      DELETE sflight FROM ms_sflight2.
+    ENDIF.
+  ENDMETHOD.                    &quot;teardown
+
+  METHOD no_changing_behavior.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+  ENDMETHOD.                    &quot;no_changing_behavior
+
+  METHOD changing_behavior.
+    DATA lo_cx_vise TYPE REF TO zcx_vise.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+
+    TRY.
+        CREATE OBJECT lo_backend
+          EXPORTING
+            iv_changes_behavior = abap_true.
+        lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+        zcl_vise=&gt;grip( i_data = lt_sflight ).&quot;is expected to raise an exception
+      CATCH zcx_vise INTO lo_cx_vise.
+    ENDTRY.
+    cl_aunit_assert=&gt;assert_not_initial( lo_cx_vise ).
+  ENDMETHOD.                    &quot;changing_behavior
+
+  METHOD changing_behavior_but_no_exc.
+    DATA lt_sflight TYPE flighttab.
+    DATA lo_cx_vise TYPE REF TO zcx_vise.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_ignore TYPE string_table.
+    APPEND &apos;PRICE&apos; TO lt_ignore.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight it_ignore_components = lt_ignore ).
+
+    TRY.
+        CREATE OBJECT lo_backend
+          EXPORTING
+            iv_changes_behavior = abap_true.
+        lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+        zcl_vise=&gt;grip( i_data = lt_sflight it_ignore_components = lt_ignore ).
+      CATCH zcx_vise INTO lo_cx_vise.
+    ENDTRY.
+    cl_aunit_assert=&gt;assert_initial( lo_cx_vise ).
+  ENDMETHOD.                    &quot;changing_behavior_but_no_exc
+
+  METHOD test_luw.
+*   the SELECT in ZVISE_RECORD is expected to be successfull if ZCL_VISE=&gt;FLUSH_AFTER_ROLLBACK has been called after ROLLBACK WORK
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lv_count TYPE i.
+    DATA ls_sflight TYPE sflight.
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    ls_sflight = lo_backend-&gt;test_transactional_integrity( ).
+
+    SELECT COUNT( * ) INTO lv_count FROM zvise_records WHERE mainprogram = &apos;ZCL_VISE_CLASS_UNDER_INSPECT==CP&apos; AND uname = sy-uname.
+    cl_aunit_assert=&gt;assert_not_initial( lv_count ).
+  ENDMETHOD.                    &quot;test_luw
+  METHOD test_sorted_table.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+    DATA lt_sflight2 TYPE flighttab.
+    FIELD-SYMBOLS &lt;ls_sflight&gt; TYPE sflight.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; ).
+    LOOP AT lt_sflight ASSIGNING &lt;ls_sflight&gt;.
+      &lt;ls_sflight&gt;-price = sy-tabix.
+    ENDLOOP.
+    lt_sflight2 = lt_sflight.
+
+    SORT lt_sflight BY price ASCENDING.&quot;make it hard for vise to compare identical, but differently sorted tables
+    SORT lt_sflight2 BY price DESCENDING.
+
+    zcl_vise=&gt;grip( i_data = lt_sflight iv_sort_field01 = &apos;CARRID&apos; iv_sort_field02 = &apos;CONNID&apos; iv_sort_field03 = &apos;FLDATE&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight2 iv_sort_field01 = &apos;CARRID&apos; iv_sort_field02 = &apos;CONNID&apos; iv_sort_field03 = &apos;FLDATE&apos; ).&quot;should not raise any exception
+  ENDMETHOD.                    &quot;test_sorted_table
+ENDCLASS.                    &quot;lcl_cl_vise IMPLEMENTATION</source>
+ </PROG>
+ <TABL TABNAME="ZVISE_RECORDS" DDLANGUAGE="E" TABCLASS="TRANSP" DATMIN="0000000000" DATMAX="0000000000" DATAVG="0000000000" CLIDEP="X" DDTEXT="Recordings of Vise" AUTHCLASS="00" CONTFLAG="A" PROZPUFF="000" EXCLASS="1">
+  <dd09l TABNAME="ZVISE_RECORDS" AS4LOCAL="A" AS4VERS="0000" TABKAT="0" TABART="APPL0" SCHFELDANZ="000" BUFALLOW="N"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="MANDT" DDLANGUAGE="E" POSITION="0001" KEYFLAG="X" ROLLNAME="MANDT" ADMINFIELD="0" INTTYPE="C" INTLEN="000006" NOTNULL="X" DOMNAME="MANDT" ROUTPUTLEN="000000" HEADLEN="03" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" DTELMASTER="D" DATATYPE="CLNT" LENG="000003" OUTPUTLEN="000003" DECIMALS="000000" ENTITYTAB="T000" MASK="  CLNTE" MASKLEN="0000" DDTEXT="Client" REPTEXT="Cl." SCRTEXT_S="Client" SCRTEXT_M="Client" SCRTEXT_L="Client" DOMNAME3L="MANDT" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="MAINPROGRAM" DDLANGUAGE="E" POSITION="0002" KEYFLAG="X" ROLLNAME="SYREPID" ADMINFIELD="0" INTTYPE="C" INTLEN="000080" NOTNULL="X" DOMNAME="PROGRAMM" ROUTPUTLEN="000000" HEADLEN="08" SCRLEN1="10" SCRLEN2="20" SCRLEN3="20" DTELMASTER="D" DATATYPE="CHAR" LENG="000040" OUTPUTLEN="000040" DECIMALS="000000" ENTITYTAB="TRDIR" MASK="  CHARE" MASKLEN="0000" DDTEXT="ABAP Program: Current Main Program" REPTEXT="Program" SCRTEXT_S="Program" SCRTEXT_M="Program Name" SCRTEXT_L="Program Name" DOMNAME3L="PROGRAMM" DEPTH="00" COMPTYPE="E" DEFFDNAME="PROGRAM_NAME" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="INCLUDE" DDLANGUAGE="E" POSITION="0003" KEYFLAG="X" ROLLNAME="INCLUDE" ADMINFIELD="0" INTTYPE="C" INTLEN="000080" NOTNULL="X" DOMNAME="PROGNAME" ROUTPUTLEN="000000" HEADLEN="08" SCRLEN1="10" SCRLEN2="00" SCRLEN3="20" DTELMASTER="D" DATATYPE="CHAR" LENG="000040" OUTPUTLEN="000040" DECIMALS="000000" MASK="  CHARE" MASKLEN="0000" DDTEXT="INCLUDE used" REPTEXT="Include" SCRTEXT_S="Include" SCRTEXT_L="INCLUDE used" DOMNAME3L="PROGNAME" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="BLOCKTYPE" DDLANGUAGE="E" POSITION="0004" KEYFLAG="X" ROLLNAME="ZBLOCKTYPE" ADMINFIELD="0" INTTYPE="C" INTLEN="000024" NOTNULL="X" DOMNAME="CHAR12" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DTELMASTER="E" DATATYPE="CHAR" LENG="000012" OUTPUTLEN="000012" DECIMALS="000000" MASK="  CHARE" MASKLEN="0000" DDTEXT="Type of Processing Block (Procedure, Module, Event Block)" REPTEXT="Type of Processing Block" SCRTEXT_S="TypeProBlo" SCRTEXT_M="Type of ProcBlock" SCRTEXT_L="Type of Processing Block" DOMNAME3L="CHAR12" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="BLOCKNAME" DDLANGUAGE="E" POSITION="0005" KEYFLAG="X" ROLLNAME="ZBLOCKNAME" ADMINFIELD="0" INTTYPE="C" INTLEN="000120" NOTNULL="X" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DTELMASTER="E" DATATYPE="CHAR" LENG="000060" OUTPUTLEN="000060" DECIMALS="000000" MASK="  CHARE" MASKLEN="0000" DDTEXT="Name of Processing Block" REPTEXT="Name of Processing Block" SCRTEXT_S="NameProcBl" SCRTEXT_M="Name of ProcBlock" SCRTEXT_L="Name of Processing Block" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="VALUE_NAME" DDLANGUAGE="E" POSITION="0006" KEYFLAG="X" ROLLNAME="ZNAME_OF_VALUE" ADMINFIELD="0" INTTYPE="C" INTLEN="000040" NOTNULL="X" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" OUTPUTLEN="000020" DECIMALS="000000" MASK="  CHARE" MASKLEN="0000" DDTEXT="logical name of the recorded value" REPTEXT="logical name of the recorded value" SCRTEXT_S="LogName" SCRTEXT_M="logical name" SCRTEXT_L="logical name of the recorded value" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="UNAME" DDLANGUAGE="E" POSITION="0007" KEYFLAG="X" ROLLNAME="UBNAME" ADMINFIELD="0" INTTYPE="C" INTLEN="000024" NOTNULL="X" DOMNAME="UBNAME" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" DTELMASTER="D" DATATYPE="CHAR" LENG="000012" OUTPUTLEN="000012" DECIMALS="000000" MASK="  CHARE" MASKLEN="0000" DDTEXT="User Name" REPTEXT="User" SCRTEXT_S="User" SCRTEXT_M="User" SCRTEXT_L="User" DOMNAME3L="UBNAME" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="CONTENT" DDLANGUAGE="E" POSITION="0008" ROLLNAME="ZCONTENT_XML" ADMINFIELD="0" INTTYPE="g" INTLEN="000008" ROUTPUTLEN="000000" HEADLEN="20" SCRLEN1="10" SCRLEN2="15" SCRLEN3="20" DTELMASTER="E" DATATYPE="STRG" LENG="000000" OUTPUTLEN="000000" DECIMALS="000000" MASK="  STRGE" MASKLEN="0000" DDTEXT="Content (XML)" REPTEXT="Content (XML)" SCRTEXT_S="Content" SCRTEXT_M="Content (XML)" SCRTEXT_L="Content (XML)" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+  <dd03p TABNAME="ZVISE_RECORDS" FIELDNAME="IS_ERROR_RECORD" DDLANGUAGE="E" POSITION="0009" ROLLNAME="ZIS_VISE_ERROR" ADMINFIELD="0" INTTYPE="C" INTLEN="000002" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" OUTPUTLEN="000001" DECIMALS="000000" VALEXI="X" MASK="  CHARE" MASKLEN="0000" DDTEXT="Wrong value compared to recorded value?" REPTEXT="Wrong value compared to recorded value?" SCRTEXT_S="Wrong val?" SCRTEXT_M="Wrong value?" SCRTEXT_L="Wrong value compared to record" DOMNAME3L="FLAG" SHLPORIGIN="F" DEPTH="00" COMPTYPE="E" EXCLASS="0" DBPOSITION="0000" OUTPUTSTYLE="00" STRORLOCPOS="00"/>
+ </TABL>
+</nugget>

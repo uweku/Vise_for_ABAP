@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PROG NAME="Z_VISE_INITIALIZE_RECORDS" VARCL="X" SUBC="1" RMAND="001" RLOAD="D" FIXPT="X" UCCHECK="X">
+ <textPool>
+  <language SPRAS="D">
+   <textElement ID="R" ENTRY="Initialisiert Aufzeichungen von Vise" LENGTH="36 "/>
+   <textElement ID="S" KEY="PROG" ENTRY="D       ." LENGTH="9 "/>
+  </language>
+ </textPool>
+ <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  Z_VISE_INITIALIZE_RECORDS
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  z_vise_initialize_records.
+
+PARAMETERS prog TYPE syrepid.
+
+DELETE FROM zvise_records WHERE mainprogram = prog AND uname = sy-uname.
+WRITE: &apos;sy-subrc&apos;, sy-subrc.</source>
+</PROG>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PROG NAME="Z_VISE_UNIT_TEST" VARCL="X" SUBC="1" RSTAT="T" RMAND="001" RLOAD="D" FIXPT="X" UCCHECK="X">
+ <textPool>
+  <language SPRAS="D">
+   <textElement ID="R" ENTRY="Programm Z_VISE_UNIT_TEST" LENGTH="25 "/>
+  </language>
+ </textPool>
+ <source>*&amp;---------------------------------------------------------------------*
+*&amp; Report  Z_VISE_UNIT_TEST
+*&amp;
+*&amp;---------------------------------------------------------------------*
+*&amp;
+*&amp;
+*&amp;---------------------------------------------------------------------*
+
+REPORT  z_vise_unit_test.
+
+*----------------------------------------------------------------------*
+*       CLASS lcl_cl_ DEFINITION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cl_vise DEFINITION FOR TESTING. &quot;#AU Risk_Level Harmless
+  &quot;#AU Duration Short
+  PRIVATE SECTION.
+    DATA ms_sflight TYPE sflight.
+    DATA ms_sflight2 TYPE sflight.
+    METHODS setup.
+    METHODS teardown.
+    METHODS no_changing_behavior FOR TESTING.
+    METHODS changing_behavior FOR TESTING.
+    METHODS changing_behavior_but_no_exc FOR TESTING.
+    METHODS test_luw FOR TESTING.
+    METHODS test_sorted_table FOR TESTING.
+ENDCLASS.                    &quot;lcl_cl_vise DEFINITION
+*----------------------------------------------------------------------*
+*       CLASS lcl_cl_vise IMPLEMENTATION
+*----------------------------------------------------------------------*
+*
+*----------------------------------------------------------------------*
+CLASS lcl_cl_vise IMPLEMENTATION.
+  METHOD setup.
+    DATA lt_sflight TYPE flighttab.
+    SELECT * FROM sflight INTO TABLE lt_sflight WHERE carrid = &apos;LH&apos; AND connid = &apos;400&apos; AND fldate = &apos;20100520&apos;.
+    IF sy-subrc NE 0.
+      ms_sflight-carrid = &apos;LH&apos;.
+      ms_sflight-connid = &apos;400&apos;.
+      ms_sflight-fldate = &apos;20100520&apos;.
+      MODIFY sflight FROM ms_sflight.
+    ENDIF.
+
+    SELECT * FROM sflight INTO TABLE lt_sflight WHERE carrid = &apos;LH&apos; AND connid = &apos;400&apos; AND fldate = &apos;20100912&apos;.
+    IF sy-subrc NE 0.
+      ms_sflight2-carrid = &apos;LH&apos;.
+      ms_sflight2-connid = &apos;400&apos;.
+      ms_sflight2-fldate = &apos;20100912&apos;.
+      MODIFY sflight FROM ms_sflight2.
+    ENDIF.
+  ENDMETHOD.                    &quot;setup
+
+  METHOD teardown.
+    IF ms_sflight IS NOT INITIAL.
+      DELETE sflight FROM ms_sflight.
+    ENDIF.
+    IF ms_sflight2 IS NOT INITIAL.
+      DELETE sflight FROM ms_sflight2.
+    ENDIF.
+  ENDMETHOD.                    &quot;teardown
+
+  METHOD no_changing_behavior.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+  ENDMETHOD.                    &quot;no_changing_behavior
+
+  METHOD changing_behavior.
+    DATA lo_cx_vise TYPE REF TO zcx_vise.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight ).
+
+    TRY.
+        CREATE OBJECT lo_backend
+          EXPORTING
+            iv_changes_behavior = abap_true.
+        lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+        zcl_vise=&gt;grip( i_data = lt_sflight ).&quot;is expected to raise an exception
+      CATCH zcx_vise INTO lo_cx_vise.
+    ENDTRY.
+    cl_aunit_assert=&gt;assert_not_initial( lo_cx_vise ).
+  ENDMETHOD.                    &quot;changing_behavior
+
+  METHOD changing_behavior_but_no_exc.
+    DATA lt_sflight TYPE flighttab.
+    DATA lo_cx_vise TYPE REF TO zcx_vise.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_ignore TYPE string_table.
+    APPEND &apos;PRICE&apos; TO lt_ignore.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight it_ignore_components = lt_ignore ).
+
+    TRY.
+        CREATE OBJECT lo_backend
+          EXPORTING
+            iv_changes_behavior = abap_true.
+        lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; iv_date = &apos;20100710&apos; ).
+        zcl_vise=&gt;grip( i_data = lt_sflight it_ignore_components = lt_ignore ).
+      CATCH zcx_vise INTO lo_cx_vise.
+    ENDTRY.
+    cl_aunit_assert=&gt;assert_initial( lo_cx_vise ).
+  ENDMETHOD.                    &quot;changing_behavior_but_no_exc
+
+  METHOD test_luw.
+*   the SELECT in ZVISE_RECORD is expected to be successfull if ZCL_VISE=&gt;FLUSH_AFTER_ROLLBACK has been called after ROLLBACK WORK
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lv_count TYPE i.
+    DATA ls_sflight TYPE sflight.
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+    ls_sflight = lo_backend-&gt;test_transactional_integrity( ).
+
+    SELECT COUNT( * ) INTO lv_count FROM zvise_records WHERE mainprogram = &apos;ZCL_VISE_CLASS_UNDER_INSPECT==CP&apos; AND uname = sy-uname.
+    cl_aunit_assert=&gt;assert_not_initial( lv_count ).
+  ENDMETHOD.                    &quot;test_luw
+  METHOD test_sorted_table.
+    DATA lo_backend TYPE REF TO zcl_vise_class_under_inspect.
+    DATA lt_sflight TYPE flighttab.
+    DATA lt_sflight2 TYPE flighttab.
+    FIELD-SYMBOLS &lt;ls_sflight&gt; TYPE sflight.
+
+    zcl_vise=&gt;release( &apos;Z_VISE_UNIT_TEST&apos; ).
+    CREATE OBJECT lo_backend
+      EXPORTING
+        iv_changes_behavior = abap_false.
+
+    lt_sflight = lo_backend-&gt;select_sflight( iv_carrid = &apos;LH&apos; iv_connid = &apos;400&apos; ).
+    LOOP AT lt_sflight ASSIGNING &lt;ls_sflight&gt;.
+      &lt;ls_sflight&gt;-price = sy-tabix.
+    ENDLOOP.
+    lt_sflight2 = lt_sflight.
+
+    SORT lt_sflight BY price ASCENDING.&quot;make it hard for vise to compare identical, but differently sorted tables
+    SORT lt_sflight2 BY price DESCENDING.
+
+    zcl_vise=&gt;grip( i_data = lt_sflight iv_sort_field01 = &apos;CARRID&apos; iv_sort_field02 = &apos;CONNID&apos; iv_sort_field03 = &apos;FLDATE&apos; ).
+    zcl_vise=&gt;grip( i_data = lt_sflight2 iv_sort_field01 = &apos;CARRID&apos; iv_sort_field02 = &apos;CONNID&apos; iv_sort_field03 = &apos;FLDATE&apos; ).&quot;should not raise any exception
+  ENDMETHOD.                    &quot;test_sorted_table
+ENDCLASS.                    &quot;lcl_cl_vise IMPLEMENTATION</source>
+</PROG>

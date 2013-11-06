@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CLAS CLSNAME="ZCL_VISE" VERSION="1" LANGU="E" DESCRIPT="Vise" CATEGORY="00" EXPOSURE="2" STATE="1" RELEASE="0" CLSFINAL="X" CLSCCINCL="X" FIXPT="X" UNICODE="X" CLSBCCAT="00" DURATION_TYPE="0 " RISK_LEVEL="0 ">
+ <localImplementation>*&quot;* use this source file for the definition and implementation of
+*&quot;* local helper classes, interface definitions and type
+*&quot;* declarations</localImplementation>
+ <localTypes>*&quot;* use this source file for any type of declarations (class
+*&quot;* definitions, interfaces or type declarations) you need for
+*&quot;* components in the private section</localTypes>
+ <localMacros>*&quot;* use this source file for any macro definitions you need
+*&quot;* in the implementation part of the class</localMacros>
+ <typeUsage CLSNAME="ZCL_VISE" TYPEGROUP="ABAP" VERSION="1" TPUTYPE="0" EXPLICIT="X"/>
+ <forwardDeclaration>ABAP</forwardDeclaration>
+ <attribute CLSNAME="ZCL_VISE" CMPNAME="MT_VISE_RECORDS" VERSION="1" LANGU="D" DESCRIPT="Aufzeichnungen von Vise" EXPOSURE="1" STATE="1" EDITORDER="1 " ATTDECLTYP="1" ATTEXPVIRT="0" TYPTYPE="4" SRCROW1="6 " SRCCOLUMN1="4 " SRCROW2="6 " SRCCOLUMN2="46 " TYPESRC_LENG="44 " TYPESRC="mt_vise_records TYPE TABLE OF zvise_records
+"/>
+ <method CLSNAME="ZCL_VISE" CMPNAME="CLASS_CONSTRUCTOR" VERSION="1" LANGU="D" DESCRIPT="CLASS_CONSTRUCTOR" EXPOSURE="2" STATE="1" EDITORDER="1 " DISPID="0 " MTDTYPE="2" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+  <source>METHOD class_constructor.
+  SET HANDLER flush_after_rollback.
+ENDMETHOD.</source>
+ </method>
+ <method CLSNAME="ZCL_VISE" CMPNAME="FLUSH_AFTER_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="schreibt Werte auf die Datenbank / für Verw. nach ROLLBACK" EXPOSURE="1" STATE="1" EDITORDER="1 " DISPID="0 " MTDTYPE="1" MTDDECLTYP="1" REFCLSNAME="CL_SYSTEM_TRANSACTION_STATE" REFCMPNAME="TRANSACTION_FINISHED" BCMTDCAT="00" BCMTDSYN="0">
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="FLUSH_AFTER_ROLLBACK" SCONAME="KIND" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="1" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="0" TYPTYPE="0"/>
+  <source>METHOD flush_after_rollback.
+  DATA ls_record TYPE zvise_records.
+  DATA lv_task TYPE string.
+  IF kind NE cl_system_transaction_state=&gt;rollback_work.
+    RETURN.
+  ENDIF.
+  LOOP AT mt_vise_records INTO ls_record.
+    lv_task = sy-tabix.
+    IF ls_record-blocktype IS NOT INITIAL.
+      MODIFY zvise_records FROM ls_record.
+    ELSE.
+      DELETE FROM zvise_records WHERE mainprogram = ls_record-mainprogram AND uname = ls_record-uname.
+    ENDIF.
+  ENDLOOP.
+  FREE: mt_vise_records.
+  COMMIT WORK.
+ENDMETHOD.</source>
+ </method>
+ <method CLSNAME="ZCL_VISE" CMPNAME="GRIP" VERSION="1" LANGU="D" DESCRIPT="fixiert den Wert" EXPOSURE="2" STATE="1" EDITORDER="2 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="I_DATA" VERSION="1" LANGU="D" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="DATA"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_NAME" VERSION="1" LANGU="D" DESCRIPT="Logischer Name des aufgezeichneten Wertes" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZNAME_OF_VALUE" PAROPTIONL="X"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IT_IGNORE_COMPONENTS" VERSION="1" LANGU="D" DESCRIPT="Tabelle von Strings" CMPTYPE="1" MTDTYPE="0" EDITORDER="3 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="STRING_TABLE" PAROPTIONL="X"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD01" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="4 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD02" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="5 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="GRIP" SCONAME="IV_SORT_FIELD03" VERSION="1" LANGU="E" DESCRIPT="Field name" CMPTYPE="1" MTDTYPE="0" EDITORDER="6 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="NAME_FELD" PAROPTIONL="X"/>
+  <source>METHOD grip.
+  DATA: lt_abap_callstack TYPE abap_callstack.
+  DATA: ls_abap_callstack TYPE abap_callstack_line.
+  DATA ls_record TYPE zvise_records.
+  FIELD-SYMBOLS &lt;lv_data&gt; TYPE any.
+  FIELD-SYMBOLS &lt;ls_data&gt; TYPE any.
+  DATA lv_component TYPE string.
+
+  DATA lv_previous_content TYPE string.
+  DATA lo_elem_descr TYPE REF TO cl_abap_elemdescr.
+  DATA lo_struct_descr TYPE REF TO cl_abap_structdescr.
+  DATA lo_table_descr TYPE REF TO cl_abap_tabledescr.
+  FIELD-SYMBOLS &lt;lt_any&gt; TYPE ANY TABLE.
+  FIELD-SYMBOLS &lt;ls_any&gt; TYPE any.
+  DATA lr_data TYPE REF TO data.
+
+  CALL FUNCTION &apos;SYSTEM_CALLSTACK&apos;
+    IMPORTING
+      callstack = lt_abap_callstack.
+
+  READ TABLE lt_abap_callstack INTO ls_abap_callstack INDEX 2.
+  CHECK sy-subrc = 0.
+
+  MOVE-CORRESPONDING ls_abap_callstack TO ls_record.
+  ls_record-value_name = iv_name.
+  ls_record-uname = sy-uname.
+
+  IF it_ignore_components IS NOT INITIAL OR iv_sort_field01 IS NOT INITIAL OR iv_sort_field02 IS NOT INITIAL OR iv_sort_field03 IS NOT INITIAL.
+    TRY.
+        lo_elem_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+
+    TRY.
+        lo_struct_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+        CREATE DATA lr_data LIKE i_data.
+        ASSIGN lr_data-&gt;* TO &lt;ls_any&gt;.
+
+        ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_any&gt; TO &lt;lv_data&gt;.
+        IF sy-subrc = 0.
+          CLEAR: &lt;lv_data&gt;.
+        ENDIF.
+        CALL TRANSFORMATION id SOURCE value = &lt;ls_any&gt; RESULT XML ls_record-content.
+
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+
+    TRY.
+        lo_table_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
+        CREATE DATA lr_data LIKE i_data.
+        ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
+        &lt;lt_any&gt; = i_data.
+        LOOP AT it_ignore_components INTO lv_component.
+          LOOP AT &lt;lt_any&gt; ASSIGNING &lt;ls_data&gt;.
+            ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_data&gt; TO &lt;lv_data&gt;.
+            IF sy-subrc = 0.
+              CLEAR: &lt;lv_data&gt;.
+            ENDIF.
+          ENDLOOP.
+        ENDLOOP.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01).
+        ENDIF.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02).
+        ENDIF.
+        IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS NOT INITIAL.
+          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02) (iv_sort_field03).
+        ENDIF.
+        CALL TRANSFORMATION id SOURCE value = &lt;lt_any&gt; RESULT XML ls_record-content.
+      CATCH cx_sy_move_cast_error.
+    ENDTRY.
+  ENDIF.
+
+  IF ls_record-content IS INITIAL.
+    CALL TRANSFORMATION id SOURCE value = i_data RESULT XML ls_record-content.
+  ENDIF.
+
+  SELECT SINGLE content FROM zvise_records INTO lv_previous_content
+    WHERE mainprogram = ls_record-mainprogram
+    AND include     = ls_record-include
+    AND blocktype   = ls_record-blocktype
+    AND blockname   = ls_record-blockname
+    AND value_name  = ls_record-value_name
+    AND uname = ls_record-uname
+    AND is_error_record = abap_false.
+  IF sy-subrc = 0.
+*    IF lo_table_descr IS NOT INITIAL.
+*      CREATE DATA lr_data LIKE i_data.
+*      ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
+*      CALL TRANSFORMATION id SOURCE XML lv_previous_content RESULT value = &lt;lt_any&gt;.
+*    ENDIF.
+    IF lv_previous_content NE ls_record-content.
+      RAISE EXCEPTION TYPE zcx_vise.
+    ENDIF.
+  ENDIF.
+
+  CHECK ls_record IS NOT INITIAL.
+  MODIFY zvise_records FROM ls_record.
+
+  register_db_op_after_rollback( ls_record ).
+ENDMETHOD.                    &quot;grip</source>
+ </method>
+ <method CLSNAME="ZCL_VISE" CMPNAME="RAISE_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="Performs a ROLLBACK and raises an appropriate exception" EXPOSURE="1" STATE="1" EDITORDER="3 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+  <source>METHOD raise_rollback.
+  ROLLBACK WORK.
+  RAISE EXCEPTION TYPE zcx_vise_forced_rollback.
+ENDMETHOD.</source>
+ </method>
+ <method CLSNAME="ZCL_VISE" CMPNAME="REGISTER_DB_OP_AFTER_ROLLBACK" VERSION="1" LANGU="D" DESCRIPT="registriert DB Update/wird nach dem Rollback durchgeführt" EXPOSURE="1" STATE="1" EDITORDER="2 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="REGISTER_DB_OP_AFTER_ROLLBACK" SCONAME="IS_RECORD" VERSION="1" LANGU="D" DESCRIPT="Aufzeichnungen von Vise" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="ZVISE_RECORDS"/>
+  <source>METHOD register_db_op_after_rollback.
+    APPEND is_record TO mt_vise_records.
+  ENDMETHOD.                    &quot;register_db_op_after_rollback</source>
+ </method>
+ <method CLSNAME="ZCL_VISE" CMPNAME="RELEASE" VERSION="1" LANGU="D" DESCRIPT="initialisiert Vise" EXPOSURE="2" STATE="1" EDITORDER="3 " DISPID="0 " MTDTYPE="0" MTDDECLTYP="1" BCMTDCAT="00" BCMTDSYN="0">
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="RELEASE" SCONAME="IV_REPID" VERSION="1" LANGU="D" DESCRIPT="ABAP-Programm, aktuelles Rahmenprogramm" CMPTYPE="1" MTDTYPE="0" EDITORDER="1 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="SYREPID"/>
+  <parameter CLSNAME="ZCL_VISE" CMPNAME="RELEASE" SCONAME="IV_UNAME" VERSION="1" LANGU="D" DESCRIPT="Benutzername" CMPTYPE="1" MTDTYPE="0" EDITORDER="2 " DISPID="0 " PARDECLTYP="0" PARPASSTYP="1" TYPTYPE="1" TYPE="UBNAME" PARVALUE="SY-UNAME"/>
+  <source>METHOD release.
+  DATA ls_record TYPE zvise_records.
+  ls_record-mainprogram = iv_repid.
+  ls_record-uname = iv_uname.
+
+  DELETE FROM zvise_records WHERE mainprogram = iv_repid AND uname = iv_uname.
+  register_db_op_after_rollback( ls_record ).
+ENDMETHOD.                    &quot;release</source>
+ </method>
+</CLAS>

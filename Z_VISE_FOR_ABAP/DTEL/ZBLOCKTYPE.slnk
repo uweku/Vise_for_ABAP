@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DTEL ROLLNAME="ZBLOCKTYPE" DDLANGUAGE="E" DOMNAME="CHAR12" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="Type of Processing Block (Procedure, Module, Event Block)" REPTEXT="Type of Processing Block" SCRTEXT_S="TypeProBlo" SCRTEXT_M="Type of ProcBlock" SCRTEXT_L="Type of Processing Block" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000012" DECIMALS="000000" OUTPUTLEN="000012" REFKIND="D">
+ <tpara/>
+</DTEL>
