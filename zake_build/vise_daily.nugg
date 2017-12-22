@@ -55,10 +55,11 @@ ENDMETHOD.</source>
   DATA lv_previous_content TYPE string.
   DATA lo_elem_descr TYPE REF TO cl_abap_elemdescr.
   DATA lo_struct_descr TYPE REF TO cl_abap_structdescr.
-  DATA lo_table_descr TYPE REF TO cl_abap_tabledescr.
-  FIELD-SYMBOLS &lt;lt_any&gt; TYPE ANY TABLE.
+
+  FIELD-SYMBOLS &lt;l_any&gt; TYPE ANY TABLE.
   FIELD-SYMBOLS &lt;ls_any&gt; TYPE any.
   DATA lr_data TYPE REF TO data.
+  DATA lv_type_kind TYPE abap_typekind.
 
   CALL FUNCTION &apos;SYSTEM_CALLSTACK&apos;
     IMPORTING
@@ -92,28 +93,36 @@ ENDMETHOD.</source>
     ENDTRY.
 
     TRY.
-        lo_table_descr ?= cl_abap_typedescr=&gt;describe_by_data( i_data ).
         CREATE DATA lr_data LIKE i_data.
-        ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
-        &lt;lt_any&gt; = i_data.
-        LOOP AT it_ignore_components INTO lv_component.
-          LOOP AT &lt;lt_any&gt; ASSIGNING &lt;ls_data&gt;.
-            ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_data&gt; TO &lt;lv_data&gt;.
-            IF sy-subrc = 0.
-              CLEAR: &lt;lv_data&gt;.
-            ENDIF.
-          ENDLOOP.
-        ENDLOOP.
+        ASSIGN lr_data-&gt;* TO &lt;l_any&gt;.
+        &lt;l_any&gt; = i_data.
+
+        lv_type_kind = cl_abap_datadescr=&gt;get_data_type_kind( p_data = &lt;l_any&gt; ).
+
+        CASE lv_type_kind.
+          WHEN cl_abap_datadescr=&gt;typekind_struct1 OR cl_abap_datadescr=&gt;typekind_struct2.
+            &quot;currently not supported
+          WHEN cl_abap_datadescr=&gt;typekind_table.
+            LOOP AT it_ignore_components INTO lv_component.
+              LOOP AT &lt;l_any&gt; ASSIGNING &lt;ls_data&gt;.
+                ASSIGN COMPONENT lv_component OF STRUCTURE &lt;ls_data&gt; TO &lt;lv_data&gt;.
+                IF sy-subrc = 0.
+                  CLEAR: &lt;lv_data&gt;.
+                ENDIF.
+              ENDLOOP.
+            ENDLOOP.
+        ENDCASE.
+
         IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS INITIAL AND iv_sort_field03 IS INITIAL.
-          SORT &lt;lt_any&gt; BY (iv_sort_field01).
+          SORT &lt;l_any&gt; BY (iv_sort_field01).
         ENDIF.
         IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS INITIAL.
-          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02).
+          SORT &lt;l_any&gt; BY (iv_sort_field01) (iv_sort_field02).
         ENDIF.
         IF iv_sort_field01 IS NOT INITIAL AND iv_sort_field02 IS NOT INITIAL AND iv_sort_field03 IS NOT INITIAL.
-          SORT &lt;lt_any&gt; BY (iv_sort_field01) (iv_sort_field02) (iv_sort_field03).
+          SORT &lt;l_any&gt; BY (iv_sort_field01) (iv_sort_field02) (iv_sort_field03).
         ENDIF.
-        CALL TRANSFORMATION id SOURCE value = &lt;lt_any&gt; RESULT XML ls_record-content.
+        CALL TRANSFORMATION id SOURCE value = &lt;l_any&gt; RESULT XML ls_record-content.
       CATCH cx_sy_move_cast_error.
     ENDTRY.
   ENDIF.
@@ -131,11 +140,6 @@ ENDMETHOD.</source>
     AND uname = ls_record-uname
     AND is_error_record = abap_false.
   IF sy-subrc = 0.
-*    IF lo_table_descr IS NOT INITIAL.
-*      CREATE DATA lr_data LIKE i_data.
-*      ASSIGN lr_data-&gt;* TO &lt;lt_any&gt;.
-*      CALL TRANSFORMATION id SOURCE XML lv_previous_content RESULT value = &lt;lt_any&gt;.
-*    ENDIF.
     IF lv_previous_content NE ls_record-content.
       RAISE EXCEPTION TYPE zcx_vise.
     ENDIF.
