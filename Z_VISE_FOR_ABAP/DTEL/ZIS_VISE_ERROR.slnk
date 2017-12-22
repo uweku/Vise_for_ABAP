@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DTEL ROLLNAME="ZIS_VISE_ERROR" DDLANGUAGE="E" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DDTEXT="Wrong value compared to recorded value?" REPTEXT="Wrong value compared to recorded value?" SCRTEXT_S="Wrong val?" SCRTEXT_M="Wrong value?" SCRTEXT_L="Wrong value compared to record" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" DECIMALS="000000" OUTPUTLEN="000001" VALEXI="X" REFKIND="D">
+<DTEL ROLLNAME="ZIS_VISE_ERROR" DDLANGUAGE="E" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DDTEXT="Wrong value compared to recorded value?" REPTEXT="Wrong value compared to recorded value?" SCRTEXT_S="Wrong val?" SCRTEXT_M="Wrong value?" SCRTEXT_L="Wrong value compared to record" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" DECIMALS="000000" OUTPUTLEN="000001" VALEXI="X" REFKIND="D" MultiLanguageSupport="X">
  <tpara/>
+ <DDLANGUAGE LANGU="D">
+  <DD04V ROLLNAME="ZIS_VISE_ERROR" DDLANGUAGE="D" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DDTEXT="Falscher Wert (im Vergleich zum aufgezeichneten Wert?)" REPTEXT="Falscher Wert (im Vergleich zum aufgezeichneten Wert?)" SCRTEXT_S="Fehler?" SCRTEXT_M="Falscher Wert?" SCRTEXT_L="Falscher Wert?" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" DECIMALS="000000" OUTPUTLEN="000001" VALEXI="X" REFKIND="D"/>
+ </DDLANGUAGE>
+ <DDLANGUAGE LANGU="E">
+  <DD04V ROLLNAME="ZIS_VISE_ERROR" DDLANGUAGE="E" DOMNAME="FLAG" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="30" DDTEXT="Wrong value compared to recorded value?" REPTEXT="Wrong value compared to recorded value?" SCRTEXT_S="Wrong val?" SCRTEXT_M="Wrong value?" SCRTEXT_L="Wrong value compared to record" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000001" DECIMALS="000000" OUTPUTLEN="000001" VALEXI="X" REFKIND="D"/>
+ </DDLANGUAGE>
 </DTEL>

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DTEL ROLLNAME="ZNAME_OF_VALUE" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="logical name of the recorded value" REPTEXT="logical name of the recorded value" SCRTEXT_S="LogName" SCRTEXT_M="logical name" SCRTEXT_L="logical name of the recorded value" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" DECIMALS="000000" OUTPUTLEN="000020">
+<DTEL ROLLNAME="ZNAME_OF_VALUE" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="logical name of the recorded value" REPTEXT="logical name of the recorded value" SCRTEXT_S="LogName" SCRTEXT_M="logical name" SCRTEXT_L="logical name of the recorded value" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" DECIMALS="000000" OUTPUTLEN="000020" MultiLanguageSupport="X">
  <tpara/>
+ <DDLANGUAGE LANGU="D">
+  <DD04V ROLLNAME="ZNAME_OF_VALUE" DDLANGUAGE="D" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="Logischer Name des aufgezeichneten Wertes" REPTEXT="Logischer Name des aufgezeichneten Wertes" SCRTEXT_S="Wert Name" SCRTEXT_M="Logischer Name" SCRTEXT_L="Logischer Name aufgezeichneter Wert" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" DECIMALS="000000" OUTPUTLEN="000020"/>
+ </DDLANGUAGE>
+ <DDLANGUAGE LANGU="E">
+  <DD04V ROLLNAME="ZNAME_OF_VALUE" DDLANGUAGE="E" ROUTPUTLEN="000000" HEADLEN="55" SCRLEN1="10" SCRLEN2="20" SCRLEN3="40" DDTEXT="logical name of the recorded value" REPTEXT="logical name of the recorded value" SCRTEXT_S="LogName" SCRTEXT_M="logical name" SCRTEXT_L="logical name of the recorded value" AUTHCLASS="00" DTELMASTER="E" DATATYPE="CHAR" LENG="000020" DECIMALS="000000" OUTPUTLEN="000020"/>
+ </DDLANGUAGE>
 </DTEL>
