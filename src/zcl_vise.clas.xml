@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>ZCL_VISE</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Vise</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>CLASS_CONSTRUCTOR</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>CLASS_CONSTRUCTOR</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>FLUSH_AFTER_ROLLBACK</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>schreibt Werte auf die Datenbank / für Verw. nach ROLLBACK</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>GRIP</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>fixiert den Wert</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>MT_VISE_RECORDS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Aufzeichnungen von Vise</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>RAISE_ROLLBACK</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Performs a ROLLBACK and raises an appropriate exception</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>REGISTER_DB_OP_AFTER_ROLLBACK</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>registriert DB Update/wird nach dem Rollback durchgeführt</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>ZCL_VISE</CLSNAME>
+     <CMPNAME>RELEASE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>initialisiert Vise</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

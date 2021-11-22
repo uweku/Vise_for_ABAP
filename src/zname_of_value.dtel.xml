@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD04V>
+    <ROLLNAME>ZNAME_OF_VALUE</ROLLNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN1>10</SCRLEN1>
+    <SCRLEN2>20</SCRLEN2>
+    <SCRLEN3>40</SCRLEN3>
+    <DDTEXT>logical name of the recorded value</DDTEXT>
+    <REPTEXT>logical name of the recorded value</REPTEXT>
+    <SCRTEXT_S>LogName</SCRTEXT_S>
+    <SCRTEXT_M>logical name</SCRTEXT_M>
+    <SCRTEXT_L>logical name of the recorded value</SCRTEXT_L>
+    <DTELMASTER>E</DTELMASTER>
+    <DATATYPE>CHAR</DATATYPE>
+    <LENG>000020</LENG>
+    <OUTPUTLEN>000020</OUTPUTLEN>
+   </DD04V>
+   <I18N_LANGS>
+    <LANGU>D</LANGU>
+   </I18N_LANGS>
+   <DD04_TEXTS>
+    <item>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DDTEXT>Logischer Name des aufgezeichneten Wertes</DDTEXT>
+     <REPTEXT>Logischer Name des aufgezeichneten Wertes</REPTEXT>
+     <SCRTEXT_S>Wert Name</SCRTEXT_S>
+     <SCRTEXT_M>Logischer Name</SCRTEXT_M>
+     <SCRTEXT_L>Logischer Name aufgezeichneter Wert</SCRTEXT_L>
+    </item>
+   </DD04_TEXTS>
+  </asx:values>
+ </asx:abap>
+</abapGit>
